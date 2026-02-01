@@ -35,7 +35,7 @@ const LoginPage: React.FC = () => {
 
     try {
       // Send POST request to login API
-      const response = await fetch("http://localhost:3000/api/v1/admin/login", {
+      const response = await fetch( `https://agsanews-production.up.railway.app/api/v1/admin/login`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -69,7 +69,7 @@ const LoginPage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-white flex items-center justify-center p-4 relative overflow-hidden">
+    <div className="min-h-screen bg-white flex items-center justify-center xl:p-4 lg:p-4 md:p-4 relative overflow-hidden">
       {/* Login Card */}
       <div className="relative w-full max-w-md">
         <div className="bg-white/90 backdrop-blur-lg rounded-2xl shadow-2xl p-8 border border-orange-200 animate-fadeIn">
