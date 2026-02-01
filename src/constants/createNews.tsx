@@ -1,0 +1,15 @@
+export const AUTHORS = [
+  "Yamin Savalanlı",
+  "Vilayat Safarov",
+  "Leyla Aşina",
+] as const;
+
+export const CATEGORIES = [
+  { value: "İdman", label: "sport" },
+  { value: "Dünya", label: "world" },
+  { value: "Texnalogiya", label: "technology" },
+  { value: "Şərq", label: "east" },
+  { value: "Siyasət", label: "politic" },
+] as const;
+
+export const API_ENDPOINT = "http://localhost:3000/api/v1/news/add";
