@@ -106,8 +106,8 @@ const LoginPage: React.FC = () => {
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
               </svg>
             </div>
-            <h1 className="text-3xl font-bold text-white mb-2">Welcome Back</h1>
-            <p className="text-orange-300">Sign in to your account</p>
+            <h1 className="text-3xl font-bold text-white mb-2">Xoş gəldiniz!</h1>
+            <p className="text-orange-300">Hesabınıza daxil olun.</p>
           </div>
           
           {/* Login Form */}
@@ -115,7 +115,7 @@ const LoginPage: React.FC = () => {
             {/* Username Input */}
             <div className="animate-slideUp animation-delay-200">
               <label htmlFor="username" className="block text-sm font-medium text-orange-200 mb-2">
-                Username
+                İstifadəçi adı:
               </label>
               <input
                 id="username"
@@ -124,7 +124,7 @@ const LoginPage: React.FC = () => {
                 value={formData.username}
                 onChange={handleInputChange}
                 className="w-full px-4 py-3 bg-black/50 border border-orange-500/30 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-200 backdrop-blur-sm"
-                placeholder="Enter your username"
+                placeholder="Ad daxil edin.."
                 disabled={isLoading}
               />
             </div>
@@ -132,7 +132,7 @@ const LoginPage: React.FC = () => {
             {/* Password Input */}
             <div className="animate-slideUp animation-delay-400">
               <label htmlFor="password" className="block text-sm font-medium text-orange-200 mb-2">
-                Password
+                Şifrə:
               </label>
               <input
                 id="password"
@@ -141,7 +141,7 @@ const LoginPage: React.FC = () => {
                 value={formData.password}
                 onChange={handleInputChange}
                 className="w-full px-4 py-3 bg-black/50 border border-orange-500/30 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-200 backdrop-blur-sm"
-                placeholder="Enter your password"
+                placeholder="Şifrə daxil edin.."
                 disabled={isLoading}
               />
             </div>
@@ -165,10 +165,10 @@ const LoginPage: React.FC = () => {
                     <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                     <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                   </svg>
-                  Signing in...
+                  Yüklənir...
                 </span>
               ) : (
-                'Sign In'
+                'Daxil ol..'
               )}
             </button>
           </form>
@@ -176,7 +176,7 @@ const LoginPage: React.FC = () => {
           {/* Footer */}
           <div className="mt-6 text-center animate-fadeIn animation-delay-800">
             <p className="text-orange-300/70 text-sm">
-              Secure login with encrypted credentials
+              Şifrələnmiş məlumatlarla təhlükəsiz giriş edin.
             </p>
           </div>
         </div>
