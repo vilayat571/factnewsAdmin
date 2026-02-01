@@ -12,4 +12,4 @@ export const CATEGORIES = [
   { value: "Siyasət", label: "politic" },
 ] as const;
 
-export const API_ENDPOINT = "http://localhost:3000/api/v1/news/add";
+export const API_ENDPOINT = "https://agsanews-production.up.railway.app/api/v1/news"

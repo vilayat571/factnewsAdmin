@@ -3,6 +3,7 @@ import "react-quill-new/dist/quill.snow.css";
 import { formats, modules } from "../utilites/quillConfig.ts";
 import { useState, type FormEvent, type ChangeEvent } from "react";
 import { API_ENDPOINT, AUTHORS, CATEGORIES } from "../constants/createNews";
+import Layout from "../layout/Layout.tsx";
 
 const getInitialFormData = (): NewsFormData => ({
   title: "",
@@ -13,7 +14,7 @@ const getInitialFormData = (): NewsFormData => ({
   author: "",
 });
 
-const App = () => {
+const CreateNews = () => {
   const [formData, setFormData] = useState<NewsFormData>(getInitialFormData());
   const [content, setContent] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
@@ -117,10 +118,10 @@ const App = () => {
     setLoading(true);
 
     try {
-      const response = await fetch(API_ENDPOINT, {
+      const response = await fetch(`${API_ENDPOINT}/news/add`, {
         method: "POST",
         headers: {
-          "Content-Type": "application/json",
+          "Content-Type": "CreateNewslication/json",
         },
         body: JSON.stringify({
           ...formData,
@@ -154,17 +155,10 @@ const App = () => {
 
   // ==================== RENDER ====================
   return (
-    <div className="min-h-screen bg-linear-to-br from-blue-50 via-white to-purple-50 py-12 px-4 sm:px-6 lg:px-8">
+   <Layout>
+     <div className="">
       <div className="max-w-4xl mx-auto">
-        {/* Header */}
-        <div className="text-center mb-10">
-          <h1 className="text-4xl font-bold text-gray-900 mb-3">
-            Create News Article
-          </h1>
-          <p className="text-gray-600">
-            Share the latest news with your audience
-          </p>
-        </div>
+
 
         {/* Alert Messages */}
         {error && (
@@ -281,7 +275,7 @@ const App = () => {
                   onChange={handleInputChange}
                   className={`w-full px-4 py-3 border ${
                     formErrors.author ? "border-red-500" : "border-gray-300"
-                  } rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 outline-none appearance-none bg-white cursor-pointer`}
+                  } rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 outline-none CreateNewsearance-none bg-white cursor-pointer`}
                 >
                   <option value="">Select an author</option>
                   {AUTHORS.map((author) => (
@@ -312,7 +306,7 @@ const App = () => {
                   onChange={handleInputChange}
                   className={`w-full px-4 py-3 border ${
                     formErrors.category ? "border-red-500" : "border-gray-300"
-                  } rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 outline-none appearance-none bg-white cursor-pointer`}
+                  } rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 outline-none CreateNewsearance-none bg-white cursor-pointer`}
                 >
                   <option value="">Select a category</option>
                   {CATEGORIES.map((category) => (
@@ -387,7 +381,7 @@ const App = () => {
               <button
                 type="submit"
                 disabled={loading}
-                className="flex-1 bg-linear-to-r from-blue-600 to-purple-600 text-white py-3 px-6 rounded-lg font-semibold hover:from-blue-700 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
+                className="flex-1 bg-black text-white rounded-md disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
               >
                 {loading ? (
                   <span className="flex items-center justify-center">
@@ -430,7 +424,8 @@ const App = () => {
         </div>
       </div>
     </div>
+   </Layout>
   );
 };
 
-export default App;
+export default CreateNews;
