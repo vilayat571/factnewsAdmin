@@ -94,7 +94,7 @@ const Dashboard = () => {
   // ─── Render ──────────────────────────────────────────────
   return (
     <Layout>
-        <div className="w-3/4 mx-auto p-4">
+        <div className="xl:w-3/4 lg:w-3/4 md:w-full sm:w-full mx-auto p-4">
         {/* Header */}
         <div className="mb-8">
           <h1 className="text-2xl font-bold text-gray-800">Dashboard</h1>
