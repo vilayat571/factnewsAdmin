@@ -4,12 +4,14 @@ export const AUTHORS = [
   "Leyla Aşina",
 ] as const;
 
-export const CATEGORIES = [
-  { value: "İdman", label: "sport" },
-  { value: "Dünya", label: "world" },
-  { value: "Texnalogiya", label: "technology" },
-  { value: "Şərq", label: "east" },
-  { value: "Siyasət", label: "politic" },
-] as const;
+export const API_ENDPOINT =
+  "https://agsanews-production.up.railway.app/api/v1/news";
 
-export const API_ENDPOINT = "https://agsanews-production.up.railway.app/api/v1/news"
+export const CATEGORIES = [
+  { value: "Siyasət", label: "siyaset" },
+  { value: "Dünya", label: "dunya" },
+  { value: "Cəmiyyət", label: "cemiyyet" },
+  { value: "İqtisadiyyat", label: "iqtisadiyyat" },
+  { value: "Məqalələr", label: "meqaleler" },
+  { value: "Texnalogiya", label: "texnalogiya" },
+] as const;

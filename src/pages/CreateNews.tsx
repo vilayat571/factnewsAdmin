@@ -103,56 +103,51 @@ const CreateNews = () => {
   /**
    * Handle form submission
    */
-  const handleSubmit = async (e: FormEvent<HTMLFormElement>): Promise<void> => {
-    e.preventDefault();
+const handleSubmit = async (e: FormEvent<HTMLFormElement>): Promise<void> => {
+  e.preventDefault();
 
-    // Clear previous messages
-    setError("");
-    setSuccess("");
+  setError("");
+  setSuccess("");
 
-    // Validate form
-    if (!validateForm()) {
-      return;
+  if (!validateForm()) {
+    return;
+  }
+
+  setLoading(true);
+
+  try {
+    const response = await fetch(`${API_ENDPOINT}/add`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",  // ✅ Fixed
+      },
+      body: JSON.stringify({
+        ...formData,
+        body: content,
+      }),
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}));
+      throw new Error(
+        errorData.message || `Server error: ${response.status}`,
+      );
     }
 
-    setLoading(true);
+    setSuccess("✅ News article created successfully!");
 
-    try {
-      const response = await fetch(`${API_ENDPOINT}/news/add`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "CreateNewslication/json",
-        },
-        body: JSON.stringify({
-          ...formData,
-          body: content,
-        }),
-      });
+    setTimeout(() => setSuccess(""), 5000);
+  } catch (err) {
+    const errorMessage =
+      err instanceof Error
+        ? err.message
+        : "An unexpected error occurred. Please try again.";
 
-      if (!response.ok) {
-        const errorData = await response.json().catch(() => ({}));
-        throw new Error(
-          errorData.message || `Server error: ${response.status}`,
-        );
-      }
-
-      setSuccess("✅ News article created successfully!");
-      // resetForm();
-
-      // Auto-hide success message after 5 seconds
-      setTimeout(() => setSuccess(""), 5000);
-    } catch (err) {
-      const errorMessage =
-        err instanceof Error
-          ? err.message
-          : "An unexpected error occurred. Please try again.";
-
-      setError(errorMessage);
-    } finally {
-      setLoading(false);
-    }
-  };
-
+    setError(errorMessage);
+  } finally {
+    setLoading(false);
+  }
+};
   // ==================== RENDER ====================
   return (
    <Layout>
@@ -359,7 +354,7 @@ const CreateNews = () => {
                   formats={formats}
                   placeholder="Write your article content here... Share the full story with rich formatting."
                   className="bg-white"
-                  style={{ height: "350px" }}
+                  style={{position:"sticky"}}
                 />
               </div>
               {formErrors.body && (

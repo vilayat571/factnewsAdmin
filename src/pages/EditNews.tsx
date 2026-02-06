@@ -12,11 +12,11 @@ import {
   FileText,
   Pencil,
   X,
-  CircleX,
-  CircleCheck,
   Loader,
 } from "lucide-react";
 import type { EditFormData, NewsItem } from "../types/editNews";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const EditNews = () => {
   // Search and Pagination States
@@ -36,11 +36,10 @@ const EditNews = () => {
     category: "",
     author: "",
     date: "",
+    description: "",
   });
   const [content, setContent] = useState<string>("");
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
-  const [error, setError] = useState<string>("");
-  const [success, setSuccess] = useState<string>("");
 
   // Debounce search input
   useEffect(() => {
@@ -80,6 +79,7 @@ const EditNews = () => {
       }
     } catch (err) {
       console.error("Error fetching news:", err);
+      toast.error("Xəbərlər yüklənmədi");
     } finally {
       setIsLoading(false);
     }
@@ -103,8 +103,6 @@ const EditNews = () => {
   const handleEditClick = async (news: NewsItem) => {
     setSelectedNews(news);
     setIsModalOpen(true);
-    setError("");
-    setSuccess("");
 
     try {
       const response = await fetch(
@@ -113,18 +111,20 @@ const EditNews = () => {
       const data = await response.json();
 
       if (data.status === "OK") {
+        console.log("Fetched news data:", data.news); // Debug log
         setEditFormData({
           title: data.news.title,
           body: data.news.body,
           category: data.news.category,
           author: data.news.author,
           date: data.news.date.split("T")[0],
+          description: data.news.description || "",
         });
         setContent(data.news.body || "");
       }
     } catch (err) {
       console.error("Error fetching news details:", err);
-      setError("Failed to load news details");
+      toast.error("Xəbər məlumatları yüklənmədi");
     }
   };
 
@@ -138,17 +138,23 @@ const EditNews = () => {
       category: "",
       author: "",
       date: "",
+      description: "",
     });
     setContent("");
-    setError("");
-    setSuccess("");
   };
 
   // Handle form input changes
   const handleInputChange = (
-    e: ChangeEvent<HTMLInputElement | HTMLSelectElement>,
+    e: ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>,
   ) => {
     const { name, value } = e.target;
+    
+    // Check description length (approximately 3 sentences = ~300 characters)
+    if (name === "description" && value.length > 300) {
+      toast.warning("Təsvir çox uzundur! Maksimum 300 simvol (təxminən 3 cümlə)");
+      return;
+    }
+    
     setEditFormData((prev) => ({
       ...prev,
       [name]: value,
@@ -168,9 +174,33 @@ const EditNews = () => {
   const handleSubmit = async () => {
     if (!selectedNews) return;
 
+    // Validation
+    if (!editFormData.title.trim()) {
+      toast.error("Başlıq daxil edin");
+      return;
+    }
+    if (!editFormData.description.trim()) {
+      toast.error("Təsvir daxil edin");
+      return;
+    }
+    if (!editFormData.author) {
+      toast.error("Müəllif seçin");
+      return;
+    }
+    if (!editFormData.category) {
+      toast.error("Kateqoriya seçin");
+      return;
+    }
+    if (!editFormData.date) {
+      toast.error("Tarix seçin");
+      return;
+    }
+    if (!content.trim() || content === "<p><br></p>") {
+      toast.error("Məzmun daxil edin");
+      return;
+    }
+
     setIsSubmitting(true);
-    setError("");
-    setSuccess("");
 
     try {
       const params = new URLSearchParams();
@@ -179,9 +209,12 @@ const EditNews = () => {
       params.append("category", editFormData.category);
       params.append("author", editFormData.author);
       params.append("date", editFormData.date);
+      params.append("description", editFormData.description);
+
+      console.log("Sending description:", editFormData.description); // Debug log
 
       const response = await fetch(
-        `${API_ENDPOINT}/${selectedNews._id}`,
+        `${API_ENDPOINT}/edit/${selectedNews._id}`,
         {
           method: "PUT",
           headers: {
@@ -194,22 +227,33 @@ const EditNews = () => {
       const data = await response.json();
 
       if (response.ok && data.status === "OK") {
-        setSuccess("✅ Xəbər uğurla yeniləndi!");
+        toast.success("✅ Xəbər uğurla yeniləndi!");
 
+        // Update the news list with all edited data including description
         setNewsList((prev) =>
           prev.map((item) =>
-            item._id === selectedNews._id ? { ...item, ...editFormData } : item,
+            item._id === selectedNews._id 
+              ? { 
+                  ...item, 
+                  title: editFormData.title,
+                  category: editFormData.category,
+                  author: editFormData.author,
+                  date: editFormData.date,
+                  body: editFormData.body,
+                  description: editFormData.description,
+                } 
+              : item,
           ),
         );
 
         setTimeout(() => {
           handleCloseModal();
-        }, 2000);
+        }, 1500);
       } else {
-        setError(data.message || "Xəbər yenilənmədi");
+        toast.error(data.message || "Xəbər yenilənmədi");
       }
     } catch (err) {
-      setError("Xəta baş verdi. Yenidən cəhd edin.");
+      toast.error("Xəta baş verdi. Yenidən cəhd edin.");
       console.error("Error updating news:", err);
     } finally {
       setIsSubmitting(false);
@@ -336,29 +380,6 @@ const EditNews = () => {
 
               {/* Modal Body */}
               <div className="p-6">
-                {/* Alert Messages */}
-                {error && (
-                  <div className="mb-6 bg-red-50 border-l-4 border-red-500 p-4 rounded-r-lg shadow-sm">
-                    <div className="flex items-center">
-                      <CircleX className="h-5 w-5 text-red-500 shrink-0" />
-                      <p className="ml-3 text-sm text-red-700 font-medium">
-                        {error}
-                      </p>
-                    </div>
-                  </div>
-                )}
-
-                {success && (
-                  <div className="mb-6 bg-green-50 border-l-4 border-green-500 p-4 rounded-r-lg shadow-sm">
-                    <div className="flex items-center">
-                      <CircleCheck className="h-5 w-5 text-green-500 shrink-0" />
-                      <p className="ml-3 text-sm text-green-700 font-medium">
-                        {success}
-                      </p>
-                    </div>
-                  </div>
-                )}
-
                 {/* Edit Form */}
                 <div className="space-y-6">
                   {/* Title */}
@@ -374,6 +395,30 @@ const EditNews = () => {
                       className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-200 outline-none"
                       placeholder="Xəbər başlığı"
                     />
+                  </div>
+
+                  {/* Description */}
+                  <div>
+                    <label className="block text-sm font-semibold text-gray-700 mb-2">
+                      Təsvir <span className="text-red-500">*</span>
+                    </label>
+                    <textarea
+                      name="description"
+                      value={editFormData.description}
+                      onChange={handleInputChange}
+                      rows={4}
+                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-200 outline-none resize-none"
+                      placeholder="Xəbərin qısa təsviri (təxminən 3 cümlə, maksimum 300 simvol)"
+                      maxLength={300}
+                    />
+                    <div className="mt-1 flex justify-between items-center">
+                      <p className="text-sm text-gray-500">
+                        Təxminən 3 cümlə yazın
+                      </p>
+                      <p className={`text-sm ${editFormData.description.length > 280 ? 'text-orange-600 font-semibold' : 'text-gray-500'}`}>
+                        {editFormData.description.length}/300 simvol
+                      </p>
+                    </div>
                   </div>
 
                   {/* Author and Category */}
@@ -436,9 +481,7 @@ const EditNews = () => {
                     <label className="block text-sm font-semibold text-gray-700 mb-2">
                       Məzmun <span className="text-red-500">*</span>
                     </label>
-                    <div
-                      className="rounded-lg border border-gray-300"
-                    >
+                    <div className="rounded-lg border border-gray-300">
                       <ReactQuill
                         theme="snow"
                         value={content}
@@ -466,7 +509,7 @@ const EditNews = () => {
                       type="button"
                       onClick={handleSubmit}
                       disabled={isSubmitting}
-                      className="flex-1 bg-linear-to-r from-orange-500 to-orange-600 text-white py-3 px-6 rounded-lg font-semibold hover:from-orange-600 hover:to-orange-700 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
+                      className="flex-1 bg-gradient-to-r from-orange-500 to-orange-600 text-white py-3 px-6 rounded-lg font-semibold hover:from-orange-600 hover:to-orange-700 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
                     >
                       {isSubmitting ? (
                         <span className="flex items-center justify-center">

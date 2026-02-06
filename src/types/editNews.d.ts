@@ -13,4 +13,5 @@ export interface EditFormData {
   category: string;
   author: string;
   date: string;
+  description:string
 }
