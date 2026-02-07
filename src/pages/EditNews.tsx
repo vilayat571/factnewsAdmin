@@ -149,9 +149,9 @@ const EditNews = () => {
   ) => {
     const { name, value } = e.target;
     
-    // Check description length (approximately 3 sentences = ~300 characters)
-    if (name === "description" && value.length > 300) {
-      toast.warning("Təsvir çox uzundur! Maksimum 300 simvol (təxminən 3 cümlə)");
+    // Check description length (maximum 1000 characters)
+    if (name === "description" && value.length > 1000) {
+      toast.warning("Təsvir çox uzundur! Maksimum 1000 simvol");
       return;
     }
     
@@ -239,7 +239,7 @@ const EditNews = () => {
                   category: editFormData.category,
                   author: editFormData.author,
                   date: editFormData.date,
-                  body: editFormData.body,
+                  body: content,
                   description: editFormData.description,
                 } 
               : item,
@@ -406,17 +406,17 @@ const EditNews = () => {
                       name="description"
                       value={editFormData.description}
                       onChange={handleInputChange}
-                      rows={4}
+                      rows={6}
                       className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-200 outline-none resize-none"
-                      placeholder="Xəbərin qısa təsviri (təxminən 3 cümlə, maksimum 300 simvol)"
-                      maxLength={300}
+                      placeholder="Xəbərin qısa təsviri (maksimum 1000 simvol)"
+                      maxLength={1000}
                     />
                     <div className="mt-1 flex justify-between items-center">
                       <p className="text-sm text-gray-500">
-                        Təxminən 3 cümlə yazın
+                        Xəbərin qısa təsviri
                       </p>
-                      <p className={`text-sm ${editFormData.description.length > 280 ? 'text-orange-600 font-semibold' : 'text-gray-500'}`}>
-                        {editFormData.description.length}/300 simvol
+                      <p className={`text-sm ${editFormData.description.length > 900 ? 'text-orange-600 font-semibold' : 'text-gray-500'}`}>
+                        {editFormData.description.length}/1000 simvol
                       </p>
                     </div>
                   </div>
