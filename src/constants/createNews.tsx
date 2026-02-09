@@ -2,6 +2,8 @@ export const AUTHORS = [
   "Yamin Savalanlı",
   "Vilayat Safarov",
   "Leyla Aşina",
+  "Mirsəməd İbrahimov",
+  "FAKT TV"
 ] as const;
 
 export const API_ENDPOINT =
